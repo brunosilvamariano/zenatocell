@@ -339,3 +339,15 @@ footer .footer-banner{background:#fff;padding:60px clamp(25px,6vw,80px)}
 .product-warranty svg{flex:none}
 .product-info .product-availability{font-size:.72rem;line-height:1.35}
 @media(max-width:640px){.product-info{gap:8px}.product-identity{min-height:70px}}
+
+@media (max-width:640px) {
+    .products article, .product-info { min-width: 0; }
+    .product-info .product-add { display:flex; width:100%; min-height:44px; padding:8px 5px; gap:5px; white-space:nowrap; }
+    .product-info .product-add svg { width:16px; height:16px; }
+    .add-label-extra { display:none; }
+    .card-quantity { grid-template-columns:44px minmax(0,1fr) 44px; min-height:46px; width:100%; }
+    .card-quantity button { min-height:44px; padding:0; }
+    .product-info .card-quantity small { line-height:1.15; }
+    .drawer .quantity button { min-height:44px; min-width:44px; }
+    .drawer li>div { min-width:0; }
+}
