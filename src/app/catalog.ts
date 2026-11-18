@@ -1,0 +1,371 @@
+export const products = [
+  {
+    "id": "seminovo-11-128",
+    "name": "iPhone 11 · 128 GB",
+    "category": "Seminovo",
+    "photos": [
+      "https://zenatocell.my.canva.site/catalogo-iphones-seminovos/_assets/media/f46f55cb3a48f54ac6d39c8943e515a5.png"
+    ],
+    "price": 99900,
+    "installment": 9500,
+    "months": 12,
+    "warranty": "3 meses de garantia"
+  },
+  {
+    "id": "seminovo-12-128",
+    "name": "iPhone 12 · 128 GB",
+    "category": "Seminovo",
+    "photos": [
+      "https://zenatocell.my.canva.site/catalogo-iphones-seminovos/_assets/media/b1e1798b15b43f740f5516048bf66010.png",
+      "https://zenatocell.my.canva.site/catalogo-iphones-seminovos/_assets/media/6fcbe5ad97a50dd901ebcb0acb131a70.png"
+    ],
+    "price": 149900,
+    "installment": 14200,
+    "months": 12,
+    "warranty": "3 meses de garantia"
+  },
+  {
+    "id": "seminovo-13-128",
+    "name": "iPhone 13 · 128 GB",
+    "category": "Seminovo",
+    "photos": [
+      "https://zenatocell.my.canva.site/catalogo-iphones-seminovos/_assets/media/11affabdb48d30c81dfc0a28a493112e.png"
+    ],
+    "price": 190000,
+    "installment": 18100,
+    "months": 12,
+    "warranty": "3 meses de garantia"
+  },
+  {
+    "id": "seminovo-13-256",
+    "name": "iPhone 13 · 256 GB",
+    "category": "Seminovo",
+    "photos": [
+      "https://zenatocell.my.canva.site/catalogo-iphones-seminovos/_assets/media/11affabdb48d30c81dfc0a28a493112e.png"
+    ],
+    "price": 219900,
+    "installment": 20100,
+    "months": 12,
+    "warranty": "3 meses de garantia"
+  },
+  {
+    "id": "seminovo-13-pro-128",
+    "name": "iPhone 13 Pro · 128 GB",
+    "category": "Seminovo",
+    "photos": [
+      "https://zenatocell.my.canva.site/catalogo-iphones-seminovos/_assets/media/0f12ffb3a3c4d2bde701fe3cb0207178.png"
+    ],
+    "price": 249900,
+    "installment": 23900,
+    "months": 12,
+    "warranty": "3 meses de garantia"
+  },
+  {
+    "id": "seminovo-13-pro-256",
+    "name": "iPhone 13 Pro · 256 GB",
+    "category": "Seminovo",
+    "photos": [
+      "https://zenatocell.my.canva.site/catalogo-iphones-seminovos/_assets/media/0f12ffb3a3c4d2bde701fe3cb0207178.png"
+    ],
+    "price": 269900,
+    "installment": 25800,
+    "months": 12,
+    "warranty": "3 meses de garantia"
+  },
+  {
+    "id": "seminovo-13-pro-max-128",
+    "name": "iPhone 13 Pro Max · 128 GB",
+    "category": "Seminovo",
+    "photos": [
+      "https://zenatocell.my.canva.site/catalogo-iphones-seminovos/_assets/media/c16b1db986891c0b1c583a367c51d1a9.png"
+    ],
+    "price": 259900,
+    "installment": 24800,
+    "months": 12,
+    "warranty": "3 meses de garantia"
+  },
+  {
+    "id": "seminovo-13-pro-max-256",
+    "name": "iPhone 13 Pro Max · 256 GB",
+    "category": "Seminovo",
+    "photos": [
+      "https://zenatocell.my.canva.site/catalogo-iphones-seminovos/_assets/media/c16b1db986891c0b1c583a367c51d1a9.png"
+    ],
+    "price": 279900,
+    "installment": 26800,
+    "months": 12,
+    "warranty": "3 meses de garantia"
+  },
+  {
+    "id": "seminovo-14-128",
+    "name": "iPhone 14 · 128 GB",
+    "category": "Seminovo",
+    "photos": [
+      "https://zenatocell.my.canva.site/catalogo-iphones-seminovos/_assets/media/030399313667dee745d0430158c08fdb.png"
+    ],
+    "price": 219900,
+    "installment": 21000,
+    "months": 12,
+    "warranty": "3 meses de garantia"
+  },
+  {
+    "id": "seminovo-14-pro-128",
+    "name": "iPhone 14 Pro · 128 GB",
+    "category": "Seminovo",
+    "photos": [
+      "https://zenatocell.my.canva.site/catalogo-iphones-seminovos/_assets/media/2052a6df62e508e1184d66ff69df2382.png",
+      "https://zenatocell.my.canva.site/catalogo-iphones-seminovos/_assets/media/51eda9df15e7534f0c3740e7fba9f2ed.png"
+    ],
+    "price": 279900,
+    "installment": 26800,
+    "months": 12,
+    "warranty": "3 meses de garantia"
+  },
+  {
+    "id": "seminovo-14-pro-256",
+    "name": "iPhone 14 Pro · 256 GB",
+    "category": "Seminovo",
+    "photos": [
+      "https://zenatocell.my.canva.site/catalogo-iphones-seminovos/_assets/media/2052a6df62e508e1184d66ff69df2382.png",
+      "https://zenatocell.my.canva.site/catalogo-iphones-seminovos/_assets/media/51eda9df15e7534f0c3740e7fba9f2ed.png"
+    ],
+    "price": 299900,
+    "installment": 28700,
+    "months": 12,
+    "warranty": "3 meses de garantia"
+  },
+  {
+    "id": "seminovo-14-pro-max-128",
+    "name": "iPhone 14 Pro Max · 128 GB",
+    "category": "Seminovo",
+    "photos": [
+      "https://zenatocell.my.canva.site/catalogo-iphones-seminovos/_assets/media/0847fbb0643d71488c323a3d40e24fe6.png",
+      "https://zenatocell.my.canva.site/catalogo-iphones-seminovos/_assets/media/0370dab9a8d555292b1cc96e492643a4.jpg"
+    ],
+    "price": 299900,
+    "installment": 28700,
+    "months": 12,
+    "warranty": "3 meses de garantia"
+  },
+  {
+    "id": "seminovo-14-pro-max-256",
+    "name": "iPhone 14 Pro Max · 256 GB",
+    "category": "Seminovo",
+    "photos": [
+      "https://zenatocell.my.canva.site/catalogo-iphones-seminovos/_assets/media/0847fbb0643d71488c323a3d40e24fe6.png",
+      "https://zenatocell.my.canva.site/catalogo-iphones-seminovos/_assets/media/0370dab9a8d555292b1cc96e492643a4.jpg"
+    ],
+    "price": 329900,
+    "installment": 31500,
+    "months": 12,
+    "warranty": "3 meses de garantia"
+  },
+  {
+    "id": "seminovo-15-128",
+    "name": "iPhone 15 · 128 GB",
+    "category": "Seminovo",
+    "photos": [
+      "https://zenatocell.my.canva.site/catalogo-iphones-seminovos/_assets/media/3ae8f23a4a372e80e64894b2a00c417b.png"
+    ],
+    "price": 279900,
+    "installment": 26800,
+    "months": 12,
+    "warranty": "3 meses de garantia"
+  },
+  {
+    "id": "seminovo-15-pro-256",
+    "name": "iPhone 15 Pro · 256 GB",
+    "category": "Seminovo",
+    "photos": [
+      "https://zenatocell.my.canva.site/catalogo-iphones-seminovos/_assets/media/d6d85ba57669f59a939d3d1f936ed277.png"
+    ],
+    "price": 369900,
+    "installment": 35400,
+    "months": 12,
+    "warranty": "3 meses de garantia"
+  },
+  {
+    "id": "seminovo-15-pro-max-256",
+    "name": "iPhone 15 Pro Max · 256 GB",
+    "category": "Seminovo",
+    "photos": [
+      "https://zenatocell.my.canva.site/catalogo-iphones-seminovos/_assets/media/4101d808ae759df482ea98bbd72e7c94.png"
+    ],
+    "price": 399900,
+    "installment": 38300,
+    "months": 12,
+    "warranty": "3 meses de garantia"
+  },
+  {
+    "id": "seminovo-16-pro-128",
+    "name": "iPhone 16 Pro · 128 GB",
+    "category": "Seminovo",
+    "photos": [
+      "https://zenatocell.my.canva.site/catalogo-iphones-seminovos/_assets/media/3ae3ee6424af9ffd8b24329736e22e41.png"
+    ],
+    "price": 429900,
+    "installment": 41100,
+    "months": 12,
+    "warranty": "3 meses de garantia"
+  },
+  {
+    "id": "seminovo-16-pro-max-256",
+    "name": "iPhone 16 Pro Max · 256 GB",
+    "category": "Seminovo",
+    "photos": [
+      "https://zenatocell.my.canva.site/catalogo-iphones-seminovos/_assets/media/3ae3ee6424af9ffd8b24329736e22e41.png"
+    ],
+    "price": 519900,
+    "installment": 49700,
+    "months": 12,
+    "warranty": "3 meses de garantia"
+  },
+  {
+    "id": "lacrado-16-128",
+    "name": "iPhone 16 · 128 GB",
+    "category": "Lacrado",
+    "photos": [
+      "https://zenatocell.my.canva.site/lista-iphones-lacrados/_assets/media/f71a48c2f4f762c6620508e36d7e8933.png"
+    ],
+    "price": 449900,
+    "installment": 43000,
+    "months": 12,
+    "warranty": "1 ano de garantia Apple"
+  },
+  {
+    "id": "lacrado-18-pro-256",
+    "name": "iPhone 18 Pro · 256 GB",
+    "category": "Lacrado",
+    "photos": [
+      "https://zenatocell.my.canva.site/lista-iphones-lacrados/_assets/media/fe6b173d39853fb53d857f07ad0087d5.png"
+    ],
+    "price": 819900,
+    "installment": 78500,
+    "months": 12,
+    "warranty": "1 ano de garantia Apple"
+  },
+  {
+    "id": "lacrado-18-pro-512",
+    "name": "iPhone 18 Pro · 512 GB",
+    "category": "Lacrado",
+    "photos": [
+      "https://zenatocell.my.canva.site/lista-iphones-lacrados/_assets/media/fe6b173d39853fb53d857f07ad0087d5.png"
+    ],
+    "price": 989900,
+    "installment": 94800,
+    "months": 12,
+    "warranty": "1 ano de garantia Apple"
+  },
+  {
+    "id": "lacrado-18-pro-max-256",
+    "name": "iPhone 18 Pro Max · 256 GB",
+    "category": "Lacrado",
+    "photos": [
+      "https://zenatocell.my.canva.site/lista-iphones-lacrados/_assets/media/fe6b173d39853fb53d857f07ad0087d5.png"
+    ],
+    "price": 919900,
+    "installment": 88100,
+    "months": 12,
+    "warranty": "1 ano de garantia Apple"
+  },
+  {
+    "id": "lacrado-18-pro-max-512",
+    "name": "iPhone 18 Pro Max · 512 GB",
+    "category": "Lacrado",
+    "photos": [
+      "https://zenatocell.my.canva.site/lista-iphones-lacrados/_assets/media/fe6b173d39853fb53d857f07ad0087d5.png"
+    ],
+    "price": 1109900,
+    "installment": 106300,
+    "months": 12,
+    "warranty": "1 ano de garantia Apple"
+  },
+  {
+    "id": "apple-watch-ultra-2-49",
+    "name": "Apple Watch Ultra 2 · 49 mm",
+    "category": "Apple Watch",
+    "photos": [
+      "https://zenatocell.my.canva.site/apple-watch/_assets/media/04e1e4b9521aecd6c54fd04904333f97.png"
+    ],
+    "price": 659900,
+    "installment": 65990,
+    "months": 10,
+    "warranty": "1 ano de garantia"
+  },
+  {
+    "id": "apple-watch-se-2-40",
+    "name": "Apple Watch SE 2 · 40 mm GPS",
+    "category": "Apple Watch",
+    "photos": [
+      "https://zenatocell.my.canva.site/apple-watch/_assets/media/8bddb8cbdbf96c4a2b644444e6ffbb1c.png",
+      "https://zenatocell.my.canva.site/apple-watch/_assets/media/a231aec2f2a02291c36c778950bb8084.png"
+    ],
+    "price": 239900,
+    "installment": 23990,
+    "months": 10,
+    "warranty": "1 ano de garantia"
+  },
+  {
+    "id": "apple-watch-se-2-44",
+    "name": "Apple Watch SE 2 · 44 mm GPS",
+    "category": "Apple Watch",
+    "photos": [
+      "https://zenatocell.my.canva.site/apple-watch/_assets/media/8bddb8cbdbf96c4a2b644444e6ffbb1c.png",
+      "https://zenatocell.my.canva.site/apple-watch/_assets/media/a231aec2f2a02291c36c778950bb8084.png"
+    ],
+    "price": 249900,
+    "installment": 24990,
+    "months": 10,
+    "warranty": "1 ano de garantia"
+  },
+  {
+    "id": "apple-watch-series-9-41",
+    "name": "Apple Watch Series 9 · 41 mm GPS",
+    "category": "Apple Watch",
+    "photos": [
+      "https://zenatocell.my.canva.site/apple-watch/_assets/media/1ad9b67b2ac6211af104ea3064c80382.png"
+    ],
+    "price": 309900,
+    "installment": 30990,
+    "months": 10,
+    "warranty": "1 ano de garantia"
+  },
+  {
+    "id": "apple-watch-series-9-45",
+    "name": "Apple Watch Series 9 · 45 mm GPS",
+    "category": "Apple Watch",
+    "photos": [
+      "https://zenatocell.my.canva.site/apple-watch/_assets/media/1ad9b67b2ac6211af104ea3064c80382.png"
+    ],
+    "price": null,
+    "installment": null,
+    "months": 10,
+    "warranty": "1 ano de garantia"
+  },
+  {
+    "id": "apple-watch-series-10-42",
+    "name": "Apple Watch Series 10 · 42 mm GPS",
+    "category": "Apple Watch",
+    "photos": [
+      "https://zenatocell.my.canva.site/apple-watch/_assets/media/adfa8425007d84565776a50519cd236f.png",
+      "https://zenatocell.my.canva.site/apple-watch/_assets/media/c1d91e25e2a70e12b89fabf5de7efe8e.png"
+    ],
+    "price": 369900,
+    "installment": 36990,
+    "months": 10,
+    "warranty": null
+  },
+  {
+    "id": "apple-watch-series-10-46",
+    "name": "Apple Watch Series 10 · 46 mm GPS",
+    "category": "Apple Watch",
+    "photos": [
+      "https://zenatocell.my.canva.site/apple-watch/_assets/media/adfa8425007d84565776a50519cd236f.png",
+      "https://zenatocell.my.canva.site/apple-watch/_assets/media/c1d91e25e2a70e12b89fabf5de7efe8e.png"
+    ],
+    "price": 389900,
+    "installment": 38990,
+    "months": 10,
+    "warranty": null
+  }
+]
