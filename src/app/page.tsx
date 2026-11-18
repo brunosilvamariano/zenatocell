@@ -3,6 +3,7 @@
 import { flushSync } from 'react-dom'
 import { useEffect, useRef, useState } from 'react'
 
+import PrivacyControls from './PrivacyControls'
 import { products } from './catalog'
 const reviews = [
   { name: 'Helena Corrêa', initials: 'HC', photo: 'https://lh3.googleusercontent.com/a-/ALV-UjXsaHoPZJi9UdHBY2Pn7MxFwhmf4xrQKKXzZJjIgWD0T-dtWvVo=s120-c-rp-mo-ba2-br100', summary: 'Trocou dois celulares na loja e elogiou a ajuda com a configuração, a atenção da equipe e o cumprimento do prazo.' },
@@ -44,24 +45,47 @@ type Product = (typeof products)[number]
 
 function ProductPhotos({ product }: { product: Product }) {
   const [index, setIndex] = useState(0)
+  const gesture = useRef<{ x: number; y: number; id: number } | null>(null)
   const length = product.photos.length
   function move(step: number) { setIndex(previous => (previous + step + length) % length) }
 
-  return <div className="product-thumbnail">
-    <img key={index} src={product.photos[index]} alt={product.name} width="704" height="704" loading="lazy"/>
-    {length > 1 && <div className="photo-controls" role="group" aria-label={'Fotos de ' + product.name}>
-      <button type="button" onClick={() => move(-1)} aria-label="Foto anterior">‹</button>
-      <span aria-live="polite">{index + 1} / {length}</span>
-      <button type="button" onClick={() => move(1)} aria-label="Próxima foto">›</button>
-    </div>}
+  return <div className="product-thumbnail"
+    onPointerDown={event => {
+      if (length < 2 || !event.isPrimary || event.button !== 0 || (event.target as HTMLElement).closest('button')) return
+      gesture.current = { x: event.clientX, y: event.clientY, id: event.pointerId }
+      event.currentTarget.setPointerCapture(event.pointerId)
+    }}
+    onPointerUp={event => {
+      const start = gesture.current
+      gesture.current = null
+      if (!start || start.id !== event.pointerId) return
+      const dx = event.clientX - start.x
+      const dy = event.clientY - start.y
+      if (Math.abs(dx) > 35 && Math.abs(dx) > Math.abs(dy) * 1.25) move(dx < 0 ? 1 : -1)
+    }}
+    onPointerCancel={() => { gesture.current = null }}
+    onLostPointerCapture={() => { gesture.current = null }}>
+    <img key={index} src={product.photos[index]} alt={product.name} width="704" height="704" loading="lazy" draggable={false}/>
+    {length > 1 && <>
+      <button className="hero-arrow hero-arrow-prev product-photo-arrow" type="button" onClick={() => move(-1)} aria-label={'Foto anterior de ' + product.name}>
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg>
+      </button>
+      <button className="hero-arrow hero-arrow-next product-photo-arrow" type="button" onClick={() => move(1)} aria-label={'Próxima foto de ' + product.name}>
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg>
+      </button>
+    </>}
   </div>
 }
-
 export default function Home() {
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('Todos')
   const [slide, setSlide] = useState(0)
   const [heroPaused, setHeroPaused] = useState(false)
+  const heroGesture = useRef<{ x: number; y: number; pointerId: number } | null>(null)
+
+  function moveHero(step: number) {
+    setSlide(index => (index + step + heroPhotos.length) % heroPhotos.length)
+  }
 
   useEffect(() => {
     if (heroPaused || heroPhotos.length < 2 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
@@ -76,6 +100,12 @@ export default function Home() {
     return () => window.clearTimeout(timeout)
   }, [notice])
   const [cart, setCart] = useState<Record<string, number>>({})
+  const [rememberCart, setRememberCart] = useState(false)
+  useEffect(() => {
+    const handler = (event: Event) => setRememberCart((event as CustomEvent<boolean>).detail)
+    window.addEventListener('zenatocell-privacy', handler)
+    return () => window.removeEventListener('zenatocell-privacy', handler)
+  }, [])
   const [loaded, setLoaded] = useState(false)
   const dialog = useRef<HTMLDialogElement>(null)
   const categoryMenu = useRef<HTMLDetailsElement>(null)
@@ -83,18 +113,20 @@ export default function Home() {
 
   useEffect(() => {
     try {
-      const saved = JSON.parse(localStorage.getItem('zenatocell-cart') || '{}')
+      const allowed = JSON.parse(localStorage.getItem('zenatocell-privacy-v1') || 'null')?.rememberCart === true
+      setRememberCart(allowed)
+      const saved = allowed ? JSON.parse(localStorage.getItem('zenatocell-cart') || '{}') : {}
       setCart(Object.fromEntries(products.flatMap(({ id }) => Number.isInteger(saved?.[id]) && saved[id] > 0 ? [[id, Math.min(99, saved[id])]] : [])))
     } catch {}
     setLoaded(true)
   }, [])
   useEffect(() => {
-    if (loaded) {
+    if (loaded && rememberCart) {
       try {
         localStorage.setItem('zenatocell-cart', JSON.stringify(cart))
       } catch {}
     }
-  }, [cart, loaded])
+  }, [cart, loaded, rememberCart])
 
   const visible = products.filter(product => (category === 'Todos' || product.category === category) && normalize(product.name + ' ' + product.category).includes(normalize(query.trim())))
   const lines = products.filter(product => cart[product.id] > 0)
@@ -141,15 +173,30 @@ export default function Home() {
     </header>
     <nav className="nav" aria-label="Menu principal"><div className="wrap nav-inner">
       <details ref={categoryMenu}><summary><Icon kind="grid"/> Todas as categorias</summary><div className="category-menu">{categories.map(item => <button key={item} onClick={() => filter(item)}>{item}</button>)}</div></details>
-      <details className="mobile-menu"><summary aria-label="Abrir menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg></summary><div className="category-menu" onClick={event => { const menu = event.currentTarget.closest("details"); if (menu) menu.open = false }}><a href="#inicio">Início</a><button onClick={() => filter('Lacrado')}>Lacrados</button><button onClick={() => filter('Seminovo')}>Seminovos</button><button onClick={() => filter('Apple Watch')}>Apple Watch</button></div></details><div className="nav-links"><a href="#inicio">Início</a><button onClick={() => filter('Lacrado')}>Lacrados</button><button onClick={() => filter('Seminovo')}>Seminovos</button><button onClick={() => filter('Apple Watch')}>Apple Watch</button></div>
+      <details className="mobile-menu"><summary aria-label="Abrir menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg></summary><div className="category-menu" onClick={event => { const menu = event.currentTarget.closest("details"); if (menu) menu.open = false }}><a href="#inicio">Início</a><button aria-pressed={category === 'Lacrado'} onClick={() => filter('Lacrado')}>Lacrados</button><button aria-pressed={category === 'Seminovo'} onClick={() => filter('Seminovo')}>Seminovos</button><button aria-pressed={category === 'Apple Watch'} onClick={() => filter('Apple Watch')}>Apple Watch</button></div></details><div className="nav-links"><a href="#inicio" aria-current={category === 'Todos' ? 'page' : undefined}>Início</a><button aria-pressed={category === 'Lacrado'} onClick={() => filter('Lacrado')}>Lacrados</button><button aria-pressed={category === 'Seminovo'} onClick={() => filter('Seminovo')}>Seminovos</button><button aria-pressed={category === 'Apple Watch'} onClick={() => filter('Apple Watch')}>Apple Watch</button></div>
       <a className="contact-link nav-phone" href="tel:+5547991597258" aria-label="Ligar para a ZenatoCell no (47) 99159-7258"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 18 18 0 0 1-7.9-2.8 18 18 0 0 1-5.5-5.5 18 18 0 0 1-2.8-7.9A2 2 0 0 1 5.6 3h3a2 2 0 0 1 2 1.7l.5 3a2 2 0 0 1-.6 2L9.2 11a14 14 0 0 0 5.5 5.5l1.3-1.3a2 2 0 0 1 2-.6l2.3.4a2 2 0 0 1 1.7 1.9Z"/></svg><span>(47) 99159-7258</span></a>
     </div></nav>
     <main>
       <div className="showcase"><div className="wrap">
         <section className="hero" aria-label="Destaques">
-          <div className="hero-media" onMouseEnter={() => setHeroPaused(true)} onMouseLeave={() => setHeroPaused(false)}>
-            {heroPhotos.map((photo, index) => <img key={photo} className={slide === index ? 'is-current' : ''} src={photo} alt="" fetchPriority={index === 0 ? 'high' : 'auto'}/>)}
-            <div className="dots">{heroPhotos.map((photo, index) => <button type="button" key={photo} aria-label={'Mostrar produto ' + (index + 1)} aria-pressed={slide === index} onClick={() => { setSlide(index); setHeroPaused(true) }}/>)}</div>
+          <div className="hero-media" onMouseEnter={() => setHeroPaused(true)} onMouseLeave={() => setHeroPaused(false)}
+            onPointerDown={event => {
+              if (!event.isPrimary || event.button !== 0 || (event.target as HTMLElement).closest("button")) return
+              heroGesture.current = { x: event.clientX, y: event.clientY, pointerId: event.pointerId }
+              event.currentTarget.setPointerCapture(event.pointerId)
+            }}
+            onPointerUp={event => {
+              const start = heroGesture.current
+              heroGesture.current = null
+              if (!start || start.pointerId !== event.pointerId) return
+              const dx = event.clientX - start.x
+              const dy = event.clientY - start.y
+              if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.25) moveHero(dx < 0 ? 1 : -1)
+            }}
+            onPointerCancel={() => { heroGesture.current = null }}
+            onLostPointerCapture={() => { heroGesture.current = null }}>
+            {heroPhotos.map((photo, index) => <img key={photo} draggable={false} className={slide === index ? 'is-current' : ''} src={photo} alt="" fetchPriority={index === 0 ? 'high' : 'auto'}/>)}
+            {heroPhotos.length > 1 && <><button className="hero-arrow hero-arrow-prev" type="button" aria-label="Produto anterior" onClick={() => moveHero(-1)}><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button><button className="hero-arrow hero-arrow-next" type="button" aria-label="Próximo produto" onClick={() => moveHero(1)}><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg></button></>}
           </div>
           <div className="hero-copy"><h1>Celulares para o seu dia a dia</h1><p>Escolha seu produto, monte o carrinho e envie o pedido pelo WhatsApp.</p><button className="red" onClick={() => filter('Todos')}>Ver produtos <span aria-hidden="true">→</span></button></div>
         </section>
@@ -172,22 +219,21 @@ export default function Home() {
         {!catalogItems.length && <p>Nenhum produto encontrado.</p>}
       </section>
       <section className="help" aria-labelledby="help-title"><div className="wrap">
-        <h2 id="help-title"><GoogleIcon/> Avaliações no Google</h2>
+        <div className="review-reputation"><span className="google-badge"><GoogleIcon/> Google</span><h2 id="help-title">A confiança de quem já escolheu a ZenatoCell</h2><div className="review-rating"><strong>4,7<span>/5</span></strong><span className="rating-stars" aria-label="Nota 4,7 de 5"><span>★★★★★</span><span className="rating-fill" aria-hidden="true">★★★★★</span></span></div><p className="review-count">Mais de <strong>129 avaliações</strong></p><a href={googleReviews} target="_blank" rel="noreferrer">Conheça as experiências no Google ↗</a></div><div className="review-feature">
         <div className="review-slide" aria-live="polite">
-          <span className="review-avatar" key={reviews[tip].name}><span>{reviews[tip].initials}</span><img src={reviews[tip].photo} alt="" loading="lazy" onError={event => { event.currentTarget.hidden = true }}/></span>
-          <strong>{reviews[tip].name}</strong>
-          <span className="review-stars" aria-label="5 de 5 estrelas">★★★★★</span>
-          <p>{reviews[tip].summary}</p>
+          <p className="review-story" key={'story-' + reviews[tip].name}>{reviews[tip].summary}</p>
+          <div className="review-author">
+            <span className="review-avatar" key={reviews[tip].name}><span>{reviews[tip].initials}</span><img src={reviews[tip].photo} alt="" loading="lazy" onError={event => { event.currentTarget.hidden = true }}/></span>
+            <div><strong>{reviews[tip].name}</strong><span className="review-stars" aria-label="5 de 5 estrelas">★★★★★</span></div>
+          </div>
         </div>
-        <div className="carousel-controls"><button aria-label="Avaliação anterior" onClick={() => setTip((tip + reviews.length - 1) % reviews.length)}>←</button><a href={googleReviews} target="_blank" rel="noreferrer">Ver no Google ↗</a><button aria-label="Próxima avaliação" onClick={() => setTip((tip + 1) % reviews.length)}>→</button></div>
-      </div></section>
-    </main>
+        <div className="review-navigation"><a href={googleReviews} target="_blank" rel="noreferrer" className="google-review-link"><GoogleIcon/> Ler avaliações no Google <span aria-hidden="true">↗</span></a><div className="carousel-controls"><button aria-label="Avaliação anterior" onClick={() => setTip((tip + reviews.length - 1) % reviews.length)}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button><button aria-label="Próxima avaliação" onClick={() => setTip((tip + 1) % reviews.length)}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg></button></div></div></div></div></section>    </main>
     <footer id="contato"><div className="wrap footer-banner"><div><h2>Visite a ZenatoCell</h2><p>Rua Blumenau, 1934 · América, Joinville–SC</p></div><div className="footer-banner-actions"><a className="red" href={directions} target="_blank" rel="noreferrer"><GoogleIcon/> Como chegar ↗</a><a className="instagram-link" href={instagram} target="_blank" rel="noreferrer"><InstagramIcon/> Instagram</a></div></div><div className="wrap footer-grid">
-      <section><h2>ZenatoCell</h2><p>Celulares e acessórios. Monte seu pedido pelo site e combine os detalhes com a loja.</p></section>
-      <section><h2>Loja</h2><a href="#inicio">Início</a><a href="#ofertas">Seleção da loja</a><a href="#catalogo">Catálogo</a></section>
+      <section className="footer-brand"><img src="/zenatocell/zenatocell.svg" alt="Zenato Cell" width="100" height="100"/><p>iPhones lacrados, seminovos e Apple Watch em Joinville.</p></section>
+      <section><h2>Loja</h2><a href="#inicio">Início</a><button aria-pressed={category === 'Lacrado'} onClick={() => filter('Lacrado')}>iPhones lacrados</button><button aria-pressed={category === 'Seminovo'} onClick={() => filter('Seminovo')}>iPhones seminovos</button><button aria-pressed={category === 'Apple Watch'} onClick={() => filter('Apple Watch')}>Apple Watch</button></section>
       <section><h2>Atendimento</h2><a href="#help-title">Avaliações</a><a href={instagram} target="_blank" rel="noreferrer" className="instagram-link"><InstagramIcon/> Instagram</a>{phone && <a href={'https://wa.me/' + phone} target="_blank" rel="noreferrer">WhatsApp ↗</a>}</section>
       <section><h2>Contato</h2><p>Consulte estoque, pagamento e retirada com a loja.</p><a href={phone ? 'https://wa.me/' + phone : instagram} target="_blank" rel="noreferrer">Fale com a ZenatoCell ↗</a></section>
-    </div><div className="footer-bottom"><div className="wrap">© ZenatoCell</div></div></footer>
+    </div><PrivacyControls/><div className="footer-bottom"><div className="wrap"><span>© ZenatoCell. Todos os direitos reservados.</span><a className="developer-credit" href="https://brunomarianosilva.com.br/" target="_blank" rel="noopener noreferrer"><svg width="34" height="38" viewBox="0 0 38 40" fill="currentColor" aria-hidden="true"><path fillRule="evenodd" d="M3 2h8v14a11 11 0 1 1-8 10.6V2Zm11 21a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/><path d="m30 1 1.8 5.2L37 8l-5.2 1.8L30 15l-1.8-5.2L23 8l5.2-1.8L30 1Z"/></svg><span><small>Desenvolvido com ❤️ por</small><strong>Bruno Mariano</strong></span></a></div></div></footer>
     <div className="cart-notice" role="status">{notice && <><span>✓ {notice.name} adicionado ao carrinho</span><button onClick={() => { setNotice(null); dialog.current?.showModal() }}>Ver carrinho</button><button aria-label="Dispensar aviso" onClick={() => setNotice(null)}>×</button></>}</div>
     <dialog ref={dialog} className="drawer" aria-labelledby="cart-title" onClick={event => { if (event.target === event.currentTarget) dialog.current?.close() }}>
       <div className="drawer-content">
