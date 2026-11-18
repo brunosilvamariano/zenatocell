@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import './store.css'
 
 export const metadata: Metadata = {
+  icons: { icon: { url: '/zenatocell/zenatocell.svg', type: 'image/svg+xml' } },
   title: 'ZenatoCell | Celulares e acessórios',
   description: 'Explore celulares e acessórios, monte seu carrinho e envie o pedido pelo WhatsApp.',
 }
