@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/cover.svg" alt="ZenatoCell — catálogo de iPhones e Apple Watch com pedido pelo WhatsApp" width="100%">
+<img src="docs/screenshots/desktop.jpg" alt="Home real da ZenatoCell no desktop, com navegação, busca e hero" width="100%">
 
 <br>
 
@@ -35,21 +35,28 @@ O projeto utiliza Next.js, React e TypeScript. Os dados do catálogo ficam separ
 | Acessibilidade | Links de salto, controles identificados, foco visível e respeito à redução de movimento |
 | Layout | Grade responsiva e controles de compra adaptados a telas estreitas |
 
-## Identidade e imagem de apresentação
+## A loja em funcionamento
+
+Capturas reais da aplicação local. Desktop em 1440 × 1000 px e mobile em 390 × 844 px.
+
+### Catálogo e condições de pagamento
+
+![Catálogo real de iPhones lacrados com fotos, valores, parcelas e controles de compra](docs/screenshots/catalogo.jpg)
+
+### Carrinho no desktop
+
+![Carrinho real com um iPhone adicionado e subtotal calculado](docs/screenshots/carrinho.jpg)
+
+### Experiência no celular
 
 <table>
 <tr>
-<td align="center" width="30%">
-<img src="public/zenatocell/zenatocell.svg" width="150" alt="Marca Zenato Cell">
-<br><strong>Zenato Cell</strong>
-</td>
-<td align="center">
-<img src="public/zenatocell/celular.webp" width="360" alt="Imagem de apresentação usada em um banner da loja">
-</td>
+<td align="center" width="50%"><strong>Home mobile</strong><br><br><img src="docs/screenshots/mobile.jpg" width="340" alt="Home real da ZenatoCell na tela de celular"></td>
+<td align="center" width="50%"><strong>Pedido no carrinho</strong><br><br><img src="docs/screenshots/mobile-carrinho.jpg" width="340" alt="Carrinho real em tela de celular com quantidade, subtotal e botão do WhatsApp"></td>
 </tr>
 </table>
 
-A imagem acima é um recurso visual do projeto. As fotos dos produtos vêm dos catálogos Canva e podem variar conforme a atualização da origem. A logo em SVG incorpora uma imagem restaurada com transparência.
+O carrinho apresentado contém um iPhone 16 de 128 GB, com subtotal de R$ 4.499,00. A captura mostra o pedido antes do envio pelo visitante.
 
 ## Jornada do pedido
 
@@ -120,7 +127,7 @@ src/
 public/
 └── zenatocell/
 docs/
-└── cover.svg
+└── screenshots/
 ```
 
 ## Atualizações e manutenção
@@ -186,7 +193,7 @@ A publicação de um commit no GitHub pode iniciar o deploy se o repositório es
 
 ## Verificações
 
-A reorganização passou na verificação TypeScript e no build de produção. A revisão visual completa após a refatoração e os testes de interação no navegador continuam pendentes.
+A reorganização passou na verificação TypeScript e no build de produção. Para as capturas, foram conferidos a home desktop, o filtro de lacrados, a adição de um item, o subtotal e o link gerado para o WhatsApp. A home e o carrinho também foram abertos em 390 px. O teste não enviou mensagens nem substitui a revisão de todos os produtos e breakpoints.
 
 ---
 
