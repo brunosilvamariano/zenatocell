@@ -1,18 +1,25 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { products } from "@/data/catalog";
+import { type Product } from "@/data/catalog";
 import { Icon } from "@/components/ui/Icons";
-const heroPhotos = [
-  ...new Set(
-    [
-      products.find((product) => product.category === "Lacrado")?.photos[0],
-      products.find((product) => product.category === "Seminovo")?.photos[0],
-      products.find((product) => product.category === "Apple Watch")?.photos[0],
-    ].filter((photo): photo is string => Boolean(photo)),
-  ),
-];
+export function Hero({
+  filter,
+  products,
+}: {
+  filter: (value: string) => void;
+  products: Product[];
+}) {
+  const heroPhotos = [
+    ...new Set(
+      [
+        products.find((product) => product.category === "Lacrado")?.photos[0],
+        products.find((product) => product.category === "Seminovo")?.photos[0],
+        products.find((product) => product.category === "Apple Watch")
+          ?.photos[0],
+      ].filter((photo): photo is string => Boolean(photo)),
+    ),
+  ];
 
-export function Hero({ filter }: { filter: (value: string) => void }) {
   const [slide, setSlide] = useState(0);
   const [heroPaused, setHeroPaused] = useState(false);
   const heroGesture = useRef<{
@@ -37,7 +44,7 @@ export function Hero({ filter }: { filter: (value: string) => void }) {
       5600,
     );
     return () => window.clearInterval(timer);
-  }, [heroPaused]);
+  }, [heroPaused, heroPhotos.length]);
 
   return (
     <div className="showcase">

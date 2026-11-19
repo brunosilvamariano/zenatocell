@@ -9,13 +9,13 @@ import { CustomerReviews } from "./CustomerReviews";
 import { flushSync } from "react-dom";
 import { useEffect, useRef, useState } from "react";
 
-import { products, type Product } from "@/data/catalog";
+import { type Product } from "@/data/catalog";
 import { phone } from "@/config/store";
 import { money, normalize } from "@/lib/format";
 
 import { ProductCard } from "@/components/catalog/ProductCard";
 const categories = ["Todos", "Lacrado", "Seminovo", "Apple Watch"];
-export default function Storefront() {
+export default function Storefront({ products }: { products: Product[] }) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("Todos");
   const [notice, setNotice] = useState<{ name: string } | null>(null);
@@ -144,7 +144,7 @@ export default function Storefront() {
         scrollCatalog={() => catalog.current?.scrollIntoView()}
       />
       <main>
-        <Hero filter={filter} />
+        <Hero filter={filter} products={products} />
         <section className="wrap catalog offers" id="ofertas">
           <div className="section-heading">
             <div>

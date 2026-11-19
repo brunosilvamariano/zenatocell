@@ -16,24 +16,24 @@ Catálogo responsivo com preços, parcelamento e carrinho integrado ao WhatsApp.
 
 A ZenatoCell reúne os produtos da loja em uma única página. O visitante pesquisa modelos, filtra por condição, consulta fotos e parcelas, monta uma seleção e abre o WhatsApp com o pedido organizado.
 
-O projeto utiliza Next.js, React e TypeScript. Os dados do catálogo ficam separados dos componentes para facilitar atualizações e a futura integração com um painel administrativo.
+O projeto utiliza Next.js, React e TypeScript. Os dados do catálogo ficam separados dos componentes para facilitar atualizações e a integração com o painel administrativo.
 
 ## Recursos implementados
 
-| Experiência | Funcionamento |
-| --- | --- |
-| Catálogo | 30 variantes cadastradas, separadas em lacrados, seminovos e Apple Watch |
-| Busca | Pesquisa por nome e categoria, desconsiderando acentos |
-| Filtros | Navegação por categoria com transição em navegadores compatíveis |
-| Fotos | Imagens dos catálogos da loja; carrossel nos produtos com fotos distintas |
-| Hero | Troca de imagens por setas, arraste ou avanço automático |
-| Carrinho | Adição no card, controles de quantidade, remoção e subtotal |
-| WhatsApp | Mensagem com modelos, capacidades, condições, quantidades e subtotal estimado |
-| Privacidade | Preferência de persistência do carrinho e painéis de políticas |
-| Avaliações | Relatos selecionados, fotos públicas, nota informada e link para o Google |
-| Contato | Instagram, telefone clicável e rota para o endereço da loja |
+| Experiência    | Funcionamento                                                                           |
+| -------------- | --------------------------------------------------------------------------------------- |
+| Catálogo       | 30 variantes cadastradas, separadas em lacrados, seminovos e Apple Watch                |
+| Busca          | Pesquisa por nome e categoria, desconsiderando acentos                                  |
+| Filtros        | Navegação por categoria com transição em navegadores compatíveis                        |
+| Fotos          | Imagens dos catálogos da loja; carrossel nos produtos com fotos distintas               |
+| Hero           | Troca de imagens por setas, arraste ou avanço automático                                |
+| Carrinho       | Adição no card, controles de quantidade, remoção e subtotal                             |
+| WhatsApp       | Mensagem com modelos, capacidades, condições, quantidades e subtotal estimado           |
+| Privacidade    | Preferência de persistência do carrinho e painéis de políticas                          |
+| Avaliações     | Relatos selecionados, fotos públicas, nota informada e link para o Google               |
+| Contato        | Instagram, telefone clicável e rota para o endereço da loja                             |
 | Acessibilidade | Links de salto, controles identificados, foco visível e respeito à redução de movimento |
-| Layout | Grade responsiva e controles de compra adaptados a telas estreitas |
+| Layout         | Grade responsiva e controles de compra adaptados a telas estreitas                      |
 
 ## A loja em funcionamento
 
@@ -83,12 +83,12 @@ npm run dev
 
 Acesse [localhost:3000](http://localhost:3000).
 
-| Comando | Finalidade |
-| --- | --- |
-| `npm run dev` | Servidor de desenvolvimento |
+| Comando             | Finalidade                                          |
+| ------------------- | --------------------------------------------------- |
+| `npm run dev`       | Servidor de desenvolvimento                         |
 | `npm run typecheck` | Geração dos tipos de rotas e verificação TypeScript |
-| `npm run build` | Build de produção |
-| `npm start` | Servidor a partir do build |
+| `npm run build`     | Build de produção                                   |
+| `npm start`         | Servidor a partir do build                          |
 
 A versão atual utiliza dados estáticos e dispensa credenciais de banco de dados.
 
@@ -132,18 +132,18 @@ docs/
 
 ## Atualizações e manutenção
 
-| Alteração | Arquivo |
-| --- | --- |
-| Modelos, capacidades, fotos, valores e parcelas | `src/data/catalog.ts` |
-| Telefone, Instagram e links externos | `src/config/store.ts` |
-| Relatos selecionados | `src/data/reviews.ts` |
-| Navegação | `src/components/storefront/SiteHeader.tsx` |
-| Banner principal | `src/components/storefront/Hero.tsx` |
-| Apresentação do produto | `src/components/catalog/ProductCard.tsx` |
-| Navegação das fotos | `src/components/catalog/ProductPhotos.tsx` |
-| Carrinho lateral | `src/components/cart/CartDrawer.tsx` |
-| Políticas e preferências | `src/components/privacy/PrivacyControls.tsx` |
-| Cores, espaçamentos e responsividade | `src/styles/store.css` |
+| Alteração                                       | Arquivo                                      |
+| ----------------------------------------------- | -------------------------------------------- |
+| Modelos, capacidades, fotos, valores e parcelas | `src/data/catalog.ts`                        |
+| Telefone, Instagram e links externos            | `src/config/store.ts`                        |
+| Relatos selecionados                            | `src/data/reviews.ts`                        |
+| Navegação                                       | `src/components/storefront/SiteHeader.tsx`   |
+| Banner principal                                | `src/components/storefront/Hero.tsx`         |
+| Apresentação do produto                         | `src/components/catalog/ProductCard.tsx`     |
+| Navegação das fotos                             | `src/components/catalog/ProductPhotos.tsx`   |
+| Carrinho lateral                                | `src/components/cart/CartDrawer.tsx`         |
+| Políticas e preferências                        | `src/components/privacy/PrivacyControls.tsx` |
+| Cores, espaçamentos e responsividade            | `src/styles/store.css`                       |
 
 ### Dados comerciais
 
@@ -181,15 +181,26 @@ O repositório inclui `vercel.json` configurado para Next.js.
 
 A publicação de um commit no GitHub pode iniciar o deploy se o repositório estiver conectado a um projeto Vercel. O envio ao GitHub, isoladamente, não confirma o estado do deploy.
 
-## Próximas entregas
+## Painel administrativo
 
-- [ ] Painel administrativo com acesso por convite.
-- [ ] Banco de produtos e variantes.
-- [ ] Upload e gerenciamento de imagens.
-- [ ] Pedidos numerados e confirmação de venda.
-- [ ] Movimentações de estoque e histórico.
-- [ ] Recebimentos, despesas e acompanhamento financeiro.
-- [ ] Permissões para proprietário, funcionários e superadmin.
+![Painel administrativo da ZenatoCell](docs/screenshots/admin-desktop.jpg)
+
+Acesse **/admin** para gerenciar a operação. O visual segue a composição do Star Admin: lateral azul recolhível, fonte Roboto, barra superior clara, indicadores, gráfico financeiro e distribuição dos pedidos. O painel inclui filtro de período e exportação CSV dos lançamentos para gestores conectados. A interface adapta o catálogo para cards no mobile e mantém a navegação acessível em tablets.
+
+| Área       | Recursos implementados                                                        |
+| ---------- | ----------------------------------------------------------------------------- |
+| Produtos   | Cadastro, edição, preço, custo, parcelamento, garantia e publicação           |
+| Fotos      | Upload para Storage, inclusão e remoção de referências                        |
+| Pedidos    | Vários produtos, conferência dos itens, confirmação, pagamento e cancelamento |
+| Estoque    | Entradas, saídas, validação de disponibilidade e histórico                    |
+| Financeiro | Recebimentos, despesas, estornos e saldo dos lançamentos                      |
+| Equipe     | Proprietário, funcionário e superadmin, com suspensão de acesso               |
+
+**Ativação pendente:** criar o projeto Supabase, executar os arquivos SQL, cadastrar o primeiro superadmin e configurar as duas variáveis de ambiente. Sem essa conexão, o painel exibe somente o catálogo local e instruções, com alterações desabilitadas. Login, uploads e persistência no ambiente real ainda dependem dessa etapa.
+
+Consulte o [guia completo de instalação e operação](docs/admin.md). As migrações ficam em `supabase/migrations` e o catálogo inicial em `supabase/seed.sql`. Enviar um pedido ao WhatsApp não confirma a venda nem baixa o estoque: a loja confirma pelo painel depois do atendimento.
+
+`npm run test:db` executa 16 verificações em PostgreSQL isolado: acesso público, permissões, suspensão, estoque insuficiente, confirmação repetida, recebimento e cancelamento com estorno. Não exige credenciais ou acesso ao Supabase de produção.
 
 ## Verificações
 
@@ -200,4 +211,3 @@ A reorganização passou na verificação TypeScript e no build de produção. P
 Desenvolvido por **[Bruno Mariano](https://brunomarianosilva.com.br/)**.
 
 A marca, os dados e as imagens da loja são usados neste projeto para a apresentação da ZenatoCell.
-
