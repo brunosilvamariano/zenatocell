@@ -7,6 +7,8 @@ import { getSupabase } from "@/lib/supabase/browser";
 import { loadAdmin, mutate } from "./service";
 import type { AdminProduct, Order } from "./types";
 import Login from "./Login";
+import BrandSettings from "./branding/BrandSettings";
+import BrandIdentity from "./branding/BrandIdentity";
 import Dashboard from "./Dashboard";
 import AdminShell, {
   adminNavigation as navigation,
@@ -129,8 +131,16 @@ export default function AdminApp() {
     .filter((entry) => entry.kind === "expense")
     .reduce((sum, entry) => sum + entry.amount, 0);
   if (phase === "loading")
-    return <div className="admin-loading">Carregando seu painel…</div>;
-  if (phase === "login") return <Login onSuccess={() => void refresh()} />;
+    return (
+      <main className="auth-boot">
+        <BrandIdentity />
+        <div role="status">
+          <span className="auth-spinner" aria-hidden="true" />
+          Preparando seu painel…
+        </div>
+      </main>
+    );
+  if (phase === "login") return <Login onSuccess={refresh} />;
   if (phase === "denied")
     return (
       <main className="admin-login">
@@ -471,42 +481,45 @@ export default function AdminApp() {
           )}
         </section>
       )}
-      {tab === "settings" && (
-        <section className="admin-panel admin-settings">
-          <h2>Ativação do painel</h2>
-          <ol>
-            <li>
-              Crie um projeto Supabase e desative o cadastro público em Auth.
-            </li>
-            <li>
-              Execute a migração de banco em{" "}
-              <code>supabase/migrations/001_admin.sql</code>.
-            </li>
-            <li>
-              Execute <code>supabase/seed.sql</code> para importar o catálogo.
-            </li>
-            <li>
-              Crie seu usuário no Supabase Auth e vincule-o como superadmin
-              conforme o guia em <code>docs/admin.md</code>.
-            </li>
-            <li>
-              Configure as variáveis do arquivo <code>.env.example</code> e
-              reinicie o site.
-            </li>
-          </ol>
-          <p>
-            O painel identifica o usuário pelo login e o banco confere as
-            permissões a cada leitura ou alteração.
-          </p>
-          <a
-            href="https://supabase.com/dashboard"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Abrir Supabase ↗
-          </a>
-        </section>
-      )}
+      {tab === "settings" &&
+        (snapshot ? (
+          <BrandSettings />
+        ) : (
+          <section className="admin-panel admin-settings">
+            <h2>Ativação do painel</h2>
+            <ol>
+              <li>
+                Crie um projeto Supabase e desative o cadastro público em Auth.
+              </li>
+              <li>
+                Execute a migração de banco em{" "}
+                <code>supabase/migrations/001_admin.sql</code>.
+              </li>
+              <li>
+                Execute <code>supabase/seed.sql</code> para importar o catálogo.
+              </li>
+              <li>
+                Crie seu usuário no Supabase Auth e vincule-o como superadmin
+                conforme o guia em <code>docs/admin.md</code>.
+              </li>
+              <li>
+                Configure as variáveis do arquivo <code>.env.example</code> e
+                reinicie o site.
+              </li>
+            </ol>
+            <p>
+              O painel identifica o usuário pelo login e o banco confere as
+              permissões a cada leitura ou alteração.
+            </p>
+            <a
+              href="https://supabase.com/dashboard"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Abrir Supabase ↗
+            </a>
+          </section>
+        ))}
       {selectedOrder && snapshot && (
         <OrderDetails
           order={selectedOrder}

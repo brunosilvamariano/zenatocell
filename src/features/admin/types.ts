@@ -51,3 +51,9 @@ export type OrderItem = {
   unit_price: number;
   unit_cost: number;
 };
+
+export type BrandRow = {
+  id: boolean;
+  display_name: string;
+  logo_path: string | null;
+};

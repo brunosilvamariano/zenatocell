@@ -1,5 +1,7 @@
 "use client";
 import { useEffect, useState, type ReactNode } from "react";
+import BrandIdentity from "./branding/BrandIdentity";
+import { useBrand } from "./branding/BrandProvider";
 import AdminIcon from "./AdminIcon";
 import type { Member } from "./types";
 export type AdminTab =
@@ -44,6 +46,7 @@ export default function AdminShell({
     media.addEventListener("change", change);
     return () => media.removeEventListener("change", change);
   }, []);
+  const { brand } = useBrand();
   const role = member?.role;
   const roleName =
     role === "superadmin"
@@ -123,10 +126,9 @@ export default function AdminShell({
         <a
           href="/admin"
           className="admin-wordmark"
-          aria-label="ZenatoCell Administração"
+          aria-label={brand.displayName + " Administração"}
         >
-          <span className="star-brand-symbol">Z</span>
-          <span className="star-brand-name">ZenatoCell</span>
+          <BrandIdentity />
         </a>
         <div className="star-side-profile">
           <span className="star-avatar">
@@ -170,7 +172,7 @@ export default function AdminShell({
             <AdminIcon name="external" />
             <span>Abrir loja</span>
           </a>
-          <small>ZenatoCell · Administração</small>
+          <small>{brand.displayName} · Administração</small>
         </div>
       </aside>
       {open && (
@@ -286,7 +288,9 @@ export default function AdminShell({
           </div>
           {children}
           <div className="star-admin-footer">
-            <span>© {new Date().getFullYear()} ZenatoCell</span>
+            <span>
+              © {new Date().getFullYear()} {brand.displayName}
+            </span>
             <span>Gestão de produtos, pedidos e estoque</span>
           </div>
         </main>

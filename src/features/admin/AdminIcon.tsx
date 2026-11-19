@@ -1,5 +1,16 @@
 export default function AdminIcon({ name }: { name: string }) {
   const paths: Record<string, string> = {
+    branding: "m12 3 9 5v8l-9 5-9-5V8l9-5ZM12 3v18M3 8l9 5 9-5",
+    upload: "M12 16V3m-5 5 5-5 5 5M4 15v6h16v-6",
+    lock: "M6 10h12v11H6zM8 10V6a4 4 0 0 1 8 0v4M12 14v3",
+    mail: "M3 5h18v14H3zM3 6l9 7 9-7",
+    eye: "M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Zm13 0a3 3 0 1 1-6 0 3 3 0 0 1 6 0",
+    "eye-off":
+      "m3 3 18 18M10 5a12 12 0 0 1 2 0c6 0 10 7 10 7a21 21 0 0 1-3 4M6 6a22 22 0 0 0-4 6s4 7 10 7a12 12 0 0 0 5-1M10 10a3 3 0 0 0 4 4",
+    shield: "m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Zm-4 9 3 3 5-6",
+    back: "M20 12H4m6-6-6 6 6 6",
+    alert: "M12 3 2 21h20L12 3Zm0 6v5m0 3v1",
+
     edit: "m15 4 5 5M4 20l4-1L21 6l-4-4L4 15v5Z",
     history: "M3 12a9 9 0 1 0 2.6-6.4L3 8M3 3v5h5M12 7v5l3 2",
     menu: "M4 6h16M4 12h16M4 18h16",

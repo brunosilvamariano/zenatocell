@@ -52,3 +52,13 @@ A vitrine consulta os produtos publicados quando o banco está configurado. Sem 
 RLS protege as tabelas; a vitrine recebe apenas campos públicos pela view store_products. Mutações passam por funções que validam o usuário no banco. O custo unitário faz parte do catálogo interno acessível à equipe autorizada; os lançamentos financeiros são exclusivos dos gestores. Nunca torne tabelas de pedidos ou membros públicas.
 
 Antes de produção: execute a migração num ambiente de homologação, teste cada perfil com contas separadas, teste confirmação/cancelamento concorrentes, configure recuperação de senha no Supabase Auth e mantenha backups conforme o plano contratado. O código foi preparado sem credenciais: a integração real só pode ser validada depois de criar o projeto.
+
+## Identidade da loja
+
+Execute também `supabase/migrations/002_branding.sql` no SQL Editor. A migração é repetível e preserva as operações existentes.
+
+Em **Configuração → Identidade da loja**, proprietários e superadministradores podem atualizar o nome e enviar a logo. A identidade aparece no login e no menu do painel. São aceitos PNG, JPG e WebP de até 5 MB; o navegador converte a imagem para WebP, preservando transparência, com até 800 pixels e 2 MB. O bucket `brand-assets` guarda arquivos com nomes únicos. Trocar a logo não apaga os arquivos anteriores. O botão **Usar logo original** restaura a marca incluída no projeto.
+
+A leitura pública disponibiliza apenas nome e caminho da logo. Alterações exigem um gestor autenticado; funcionários e visitantes não podem salvar a identidade nem enviar arquivos nesse bucket.
+
+A tela de acesso utiliza fotografia criada para o projeto, campos com rótulos, alternância de visibilidade da senha, aviso de Caps Lock e ajuda de acesso. O link de ajuda direciona ao responsável pelo sistema; não dispara recuperação de senha automática.

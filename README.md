@@ -196,11 +196,11 @@ Acesse **/admin** para gerenciar a operação. O visual segue a composição do 
 | Financeiro | Recebimentos, despesas, estornos e saldo dos lançamentos                      |
 | Equipe     | Proprietário, funcionário e superadmin, com suspensão de acesso               |
 
-**Ativação pendente:** criar o projeto Supabase, executar os arquivos SQL, cadastrar o primeiro superadmin e configurar as duas variáveis de ambiente. Sem essa conexão, o painel exibe somente o catálogo local e instruções, com alterações desabilitadas. Login, uploads e persistência no ambiente real ainda dependem dessa etapa.
+**Integração:** Supabase fornece autenticação, persistência e armazenamento. Novas instalações devem seguir o guia de administração e executar as migrações antes do primeiro acesso.
 
 Consulte o [guia completo de instalação e operação](docs/admin.md). As migrações ficam em `supabase/migrations` e o catálogo inicial em `supabase/seed.sql`. Enviar um pedido ao WhatsApp não confirma a venda nem baixa o estoque: a loja confirma pelo painel depois do atendimento.
 
-`npm run test:db` executa 16 verificações em PostgreSQL isolado: acesso público, permissões, suspensão, estoque insuficiente, confirmação repetida, recebimento e cancelamento com estorno. Não exige credenciais ou acesso ao Supabase de produção.
+`npm run test:db` executa 27 verificações em PostgreSQL isolado: acesso público, permissões, suspensão, estoque insuficiente, confirmação repetida, recebimento e cancelamento com estorno. Não exige credenciais ou acesso ao Supabase de produção.
 
 ## Verificações
 
@@ -211,3 +211,11 @@ A reorganização passou na verificação TypeScript e no build de produção. P
 Desenvolvido por **[Bruno Mariano](https://brunomarianosilva.com.br/)**.
 
 A marca, os dados e as imagens da loja são usados neste projeto para a apresentação da ZenatoCell.
+
+### Acesso e identidade visual
+
+![Login administrativo da ZenatoCell](docs/screenshots/admin-login.jpg)
+
+O login tem composição editorial, fotografia exclusiva em WebP e adaptação para desktop, tablet e celular. Gestores podem atualizar nome e logo em **Configuração → Identidade da loja**. A identidade é compartilhada entre o login e o menu administrativo, com permissões verificadas no banco.
+
+A migração `002_branding.sql` acrescenta essa configuração. Os 27 testes isolados incluem leitura pública da identidade, restrição de uploads e bloqueio de alterações por visitantes e funcionários.

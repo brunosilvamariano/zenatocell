@@ -1,5 +1,6 @@
 import type {
   AdminProduct,
+  BrandRow,
   Member,
   Order,
   Entry,
@@ -15,6 +16,7 @@ type Table<T> = {
 export type Database = {
   public: {
     Tables: {
+      store_branding: Table<BrandRow>;
       products: Table<AdminProduct>;
       order_items: Table<OrderItem>;
       members: Table<Member>;
@@ -29,6 +31,10 @@ export type Database = {
       };
     };
     Functions: {
+      save_branding: {
+        Args: { p_display_name: string; p_logo_path: string | null };
+        Returns: undefined;
+      };
       save_product: {
         Args: { p_product: Record<string, unknown> };
         Returns: undefined;

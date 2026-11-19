@@ -1,3 +1,5 @@
+import { BrandProvider } from "@/features/admin/branding/BrandProvider";
+import "@/styles/admin-auth.css";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "@/styles/admin.css";
@@ -16,7 +18,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap"
         precedence="default"
       />
-      {children}
+      <BrandProvider>{children}</BrandProvider>
     </>
   );
 }
