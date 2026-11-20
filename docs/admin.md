@@ -62,3 +62,7 @@ Em **Configuração → Identidade da loja**, proprietários e superadministrado
 A leitura pública disponibiliza apenas nome e caminho da logo. Alterações exigem um gestor autenticado; funcionários e visitantes não podem salvar a identidade nem enviar arquivos nesse bucket.
 
 A tela de acesso utiliza fotografia criada para o projeto, campos com rótulos, alternância de visibilidade da senha, aviso de Caps Lock e ajuda de acesso. O link de ajuda direciona ao responsável pelo sistema; não dispara recuperação de senha automática.
+
+## Validação antes da entrega
+
+Execute também `supabase/migrations/003_product_validation.sql` em instalações existentes. A migração reforça os campos obrigatórios de fotos e itens de pedido. Consulte [o relatório de validação](admin-validation.md) para cobertura, correções e limites dos testes.

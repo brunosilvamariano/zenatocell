@@ -200,7 +200,7 @@ Acesse **/admin** para gerenciar a operação. O visual segue a composição do 
 
 Consulte o [guia completo de instalação e operação](docs/admin.md). As migrações ficam em `supabase/migrations` e o catálogo inicial em `supabase/seed.sql`. Enviar um pedido ao WhatsApp não confirma a venda nem baixa o estoque: a loja confirma pelo painel depois do atendimento.
 
-`npm run test:db` executa 27 verificações em PostgreSQL isolado: acesso público, permissões, suspensão, estoque insuficiente, confirmação repetida, recebimento e cancelamento com estorno. Não exige credenciais ou acesso ao Supabase de produção.
+`npm run test:db` executa 67 verificações em PostgreSQL isolado: acesso público, permissões, suspensão, estoque insuficiente, confirmação repetida, recebimento e cancelamento com estorno. Não exige credenciais ou acesso ao Supabase de produção.
 
 ## Verificações
 
@@ -218,4 +218,6 @@ A marca, os dados e as imagens da loja são usados neste projeto para a apresent
 
 O login tem composição editorial, fotografia exclusiva em WebP e adaptação para desktop, tablet e celular. Gestores podem atualizar nome e logo em **Configuração → Identidade da loja**. A identidade é compartilhada entre o login e o menu administrativo, com permissões verificadas no banco.
 
-A migração `002_branding.sql` acrescenta essa configuração. Os 27 testes isolados incluem leitura pública da identidade, restrição de uploads e bloqueio de alterações por visitantes e funcionários.
+A migração `002_branding.sql` acrescenta essa configuração. Os 67 testes isolados incluem leitura pública da identidade, restrição de uploads e bloqueio de alterações por visitantes e funcionários.
+
+Validação funcional: veja [o relatório de homologação](docs/admin-validation.md), com casos exercitados, correções e itens ainda dependentes de teste integrado no ambiente hospedado.

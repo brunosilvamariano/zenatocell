@@ -22,6 +22,12 @@ await db.exec(
 await db.exec(
   "grant usage on schema storage to authenticated; grant insert on storage.objects to authenticated;",
 );
+await db.exec(
+  fs.readFileSync(
+    root + "/supabase/migrations/003_product_validation.sql",
+    "utf8",
+  ),
+);
 const owner = "00000000-0000-4000-8000-000000000001",
   staff = "00000000-0000-4000-8000-000000000002",
   outsider = "00000000-0000-4000-8000-000000000003";
@@ -244,6 +250,310 @@ ok(
   (await db.query("select logo_path from public.store_branding")).rows[0]
     .logo_path === null,
   "manager can restore original logo without deleting assets",
+);
+// Cenários de homologação: somente o PostgreSQL efêmero acima recebe estes dados.
+await identity(owner);
+const qaProduct = {
+  id: "qa-device",
+  name: "Produto de homologação",
+  category: "Lacrado",
+  description: "QA",
+  photos: ["https://example.invalid/device.webp"],
+  price: 10000,
+  cost: 6000,
+  installment: 1000,
+  months: 12,
+  warranty: "Garantia de teste",
+  active: true,
+};
+const saveQA = async (patch = {}) =>
+  db.query("select public.save_product($1::jsonb)", [
+    JSON.stringify({ ...qaProduct, ...patch }),
+  ]);
+await saveQA();
+ok(
+  (await db.query("select stock from public.products where id='qa-device'"))
+    .rows[0].stock === 0,
+  "new products start with zero stock",
+);
+await db.query(
+  "select public.adjust_stock('qa-device',10,'Entrada de homologação')",
+);
+await saveQA({ name: "Produto atualizado" });
+ok(
+  (await db.query("select stock from public.products where id='qa-device'"))
+    .rows[0].stock === 10,
+  "editing a product preserves stock",
+);
+await saveQA({ active: false });
+await db.exec("reset role; set role anon");
+ok(
+  (await db.query("select * from public.store_products where id='qa-device'"))
+    .rows.length === 0,
+  "unpublished products are hidden from storefront",
+);
+await identity(owner);
+await saveQA();
+await rejects(
+  "select public.save_product($1::jsonb)",
+  [JSON.stringify({ ...qaProduct, photos: [] })],
+  "empty product photo list rejected",
+);
+const { photos: ignoredPhotos, ...withoutPhotos } = qaProduct;
+await rejects(
+  "select public.save_product($1::jsonb)",
+  [JSON.stringify(withoutPhotos)],
+  "missing product photos rejected",
+);
+await rejects(
+  "select public.save_product($1::jsonb)",
+  [JSON.stringify({ ...qaProduct, price: -1 })],
+  "negative product price rejected",
+);
+await rejects(
+  "select public.save_product($1::jsonb)",
+  [JSON.stringify({ ...qaProduct, cost: -1 })],
+  "negative product cost rejected",
+);
+await rejects(
+  "select public.adjust_stock('qa-device',0,'Entrada QA')",
+  [],
+  "zero stock movement rejected",
+);
+await rejects(
+  "select public.adjust_stock('qa-device',-11,'Saída QA')",
+  [],
+  "stock cannot become negative",
+);
+ok(
+  (await db.query("select stock from public.products where id='qa-device'"))
+    .rows[0].stock === 10,
+  "failed movement preserves stock",
+);
+await rejects(
+  "select public.adjust_stock('qa-device',1,'  ')",
+  [],
+  "blank movement reason rejected",
+);
+const qaItems = [{ product_id: "qa-device", quantity: 2 }];
+const createQA = async (items = qaItems) =>
+  (
+    await db.query("select public.create_order($1,$2,$3,$4::jsonb) as id", [
+      "Cliente QA",
+      "00000000000",
+      "Homologação",
+      JSON.stringify(items),
+    ])
+  ).rows[0].id;
+await rejects(
+  "select public.create_order($1,$2,$3,$4::jsonb)",
+  ["Cliente QA", "00000000000", "", "[]"],
+  "empty order rejected",
+);
+await rejects(
+  "select public.create_order($1,$2,$3,$4::jsonb)",
+  [
+    "Cliente QA",
+    "00000000000",
+    "",
+    JSON.stringify([{ product_id: "qa-device", quantity: 0 }]),
+  ],
+  "zero order quantity rejected",
+);
+await rejects(
+  "select public.create_order($1,$2,$3,$4::jsonb)",
+  [
+    "Cliente QA",
+    "00000000000",
+    "",
+    JSON.stringify([{ product_id: "missing", quantity: 1 }]),
+  ],
+  "unknown order product rejected",
+);
+const qaPending = await createQA();
+ok(
+  (await db.query("select total from public.orders where id=$1", [qaPending]))
+    .rows[0].total === 20000,
+  "server calculates order total from catalog",
+);
+ok(
+  (await db.query("select stock from public.products where id='qa-device'"))
+    .rows[0].stock === 10,
+  "pending order does not deduct stock",
+);
+await saveQA({ price: 15000, cost: 9000 });
+ok(
+  (
+    await db.query(
+      "select unit_price,unit_cost from public.order_items where order_id=$1",
+      [qaPending],
+    )
+  ).rows.every((row) => row.unit_price === 10000 && row.unit_cost === 6000),
+  "order retains original price and cost after catalog edit",
+);
+await rejects(
+  "select public.transition_order($1,'paid')",
+  [qaPending],
+  "pending order cannot skip confirmation",
+);
+await db.query("select public.transition_order($1,'cancelled')", [qaPending]);
+ok(
+  (await db.query("select stock from public.products where id='qa-device'"))
+    .rows[0].stock === 10,
+  "cancelling pending order preserves stock",
+);
+await rejects(
+  "select public.transition_order($1,'confirmed')",
+  [qaPending],
+  "cancelled order cannot be reopened",
+);
+const qaStaffOrder = await createQA();
+await identity(staff);
+await rejects(
+  "select public.save_product($1::jsonb)",
+  [JSON.stringify(qaProduct)],
+  "staff cannot edit product registration",
+);
+await db.query("select public.transition_order($1,'confirmed')", [
+  qaStaffOrder,
+]);
+ok(
+  (
+    await db.query("select status from public.orders where id=$1", [
+      qaStaffOrder,
+    ])
+  ).rows[0].status === "confirmed",
+  "staff can confirm operational orders",
+);
+await rejects(
+  "select public.transition_order($1,'paid')",
+  [qaStaffOrder],
+  "staff cannot register order payment",
+);
+await identity(owner);
+await db.query("select public.transition_order($1,'paid')", [qaStaffOrder]);
+await identity(staff);
+await rejects(
+  "select public.transition_order($1,'cancelled')",
+  [qaStaffOrder],
+  "staff cannot refund paid order",
+);
+await identity(owner);
+await db.query("select public.transition_order($1,'cancelled')", [
+  qaStaffOrder,
+]);
+ok(
+  (await db.query("select stock from public.products where id='qa-device'"))
+    .rows[0].stock === 10,
+  "manager refund restores purchased units",
+);
+await db.query("select public.adjust_stock('qa-device',-9,'Preparação QA')");
+const qaDuplicate = await createQA([
+  { product_id: "qa-device", quantity: 1 },
+  { product_id: "qa-device", quantity: 1 },
+]);
+await rejects(
+  "select public.transition_order($1,'confirmed')",
+  [qaDuplicate],
+  "duplicate product lines cannot bypass stock validation",
+);
+ok(
+  (await db.query("select stock from public.products where id='qa-device'"))
+    .rows[0].stock === 1,
+  "duplicate-line failure rolls back stock",
+);
+const multiOrder = await createQA([
+  { product_id: "qa-device", quantity: 1 },
+  { product_id: "seminovo-11-128", quantity: 99 },
+]);
+await rejects(
+  "select public.transition_order($1,'confirmed')",
+  [multiOrder],
+  "insufficient second item rolls back entire order confirmation",
+);
+ok(
+  (await db.query("select stock from public.products where id='qa-device'"))
+    .rows[0].stock === 1,
+  "multi-item rollback restores first product too",
+);
+ok(
+  (
+    await db.query("select * from public.stock_movements where order_id=$1", [
+      multiOrder,
+    ])
+  ).rows.length === 0,
+  "failed confirmation leaves no partial stock movements",
+);
+await db.query(
+  "select public.add_financial_entry('income',12345,'Entrada QA','2026-11-01')",
+);
+await db.query(
+  "select public.add_financial_entry('expense',2345,'Saída QA','2026-11-01')",
+);
+ok(
+  Number(
+    (
+      await db.query(
+        "select sum(case when kind='income' then amount else -amount end) as balance from public.financial_entries where description in ('Entrada QA','Saída QA')",
+      )
+    ).rows[0].balance,
+  ) === 10000,
+  "manual financial balance uses exact cents",
+);
+await rejects(
+  "select public.add_financial_entry('income',0,'Entrada QA',current_date)",
+  [],
+  "zero financial amount rejected",
+);
+await rejects(
+  "select public.add_financial_entry('expense',-1,'Saída QA',current_date)",
+  [],
+  "negative financial amount rejected",
+);
+await rejects(
+  "select public.set_member($1,'staff',false)",
+  [owner],
+  "superadmin cannot suspend own account",
+);
+await db.query("select public.set_member($1,'owner',true)", [outsider]);
+await identity(outsider);
+await saveQA();
+ok(
+  (await db.query("select price from public.products where id='qa-device'"))
+    .rows[0].price === 10000,
+  "owner role can maintain products",
+);
+await rejects(
+  "select public.set_member($1,'superadmin',true)",
+  [staff],
+  "owner cannot grant administrative access",
+);
+await db.query(
+  "select public.add_financial_entry('income',100,'Receita do proprietário QA',current_date)",
+);
+ok(
+  (
+    await db.query(
+      "select * from public.financial_entries where description='Receita do proprietário QA'",
+    )
+  ).rows.length === 1,
+  "owner can access own operation financial ledger",
+);
+await identity(owner);
+await rejects(
+  "select public.save_product($1::jsonb)",
+  [JSON.stringify({ ...qaProduct, photos: [""] })],
+  "blank photo reference rejected",
+);
+await rejects(
+  "select public.save_product($1::jsonb)",
+  [JSON.stringify({ ...qaProduct, photos: [null] })],
+  "null photo reference rejected",
+);
+await rejects(
+  "select public.create_order($1,$2,$3,null)",
+  ["Cliente QA", "00000000000", ""],
+  "missing order items rejected",
 );
 console.log(assertions + " database assertions passed");
 await db.close();
